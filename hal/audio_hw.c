@@ -18,7 +18,7 @@
  */
 
 #define LOG_TAG "audio_hw_primary"
-//#define LOG_NDEBUG 0
+#define LOG_NDEBUG 0
 /*#define VERY_VERY_VERBOSE_LOGGING*/
 #ifdef VERY_VERY_VERBOSE_LOGGING
 #define ALOGVV ALOGV
@@ -163,7 +163,6 @@ const char * const use_case_table[AUDIO_USECASE_MAX] = {
 #endif
     [USECASE_AUDIO_RECORD] = "audio-record",
     [USECASE_AUDIO_RECORD_COMPRESS] = "audio-record-compress",
-    [USECASE_AUDIO_RECORD_LOW_LATENCY] = "low-latency-record",
     [USECASE_AUDIO_RECORD_FM_VIRTUAL] = "fm-virtual-record",
     [USECASE_AUDIO_PLAYBACK_FM] = "play-fm",
     [USECASE_AUDIO_HFP_SCO] = "hfp-sco",
@@ -3402,9 +3401,6 @@ static int adev_open_input_stream(struct audio_hw_device *dev,
     if (config->sample_rate == LOW_LATENCY_CAPTURE_SAMPLE_RATE &&
             (flags & AUDIO_INPUT_FLAG_FAST) != 0) {
         is_low_latency = true;
-#if LOW_LATENCY_CAPTURE_USE_CASE
-        in->usecase = USECASE_AUDIO_RECORD_LOW_LATENCY;
-#endif
     }
     in->config = pcm_config_audio_capture;
     in->config.rate = config->sample_rate;
@@ -3545,8 +3541,7 @@ static int adev_verify_devices(struct audio_device *adev)
 
     /* should be the usecases enabled in adev_open_input_stream() */
     static const int test_in_usecases[] = {
-             USECASE_AUDIO_RECORD,
-             USECASE_AUDIO_RECORD_LOW_LATENCY, /* does not appear to be used */
+             USECASE_AUDIO_RECORD
     };
     /* should be the usecases enabled in adev_open_output_stream()*/
     static const int test_out_usecases[] = {
